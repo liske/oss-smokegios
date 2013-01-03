@@ -1,0 +1,18 @@
+Source: smokegios
+Section: net
+Priority: extra
+Maintainer: Thomas Liske <thomas@oribas.lan.fiasko-nw.net>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Homepage: https://projects.jethrocarr.com/p/oss-smokegios/
+Vcs-Browser: https://projects.jethrocarr.com/p/oss-smokegios/source/tree/HEAD/
+
+Package: smokegios
+Architecture: all
+Depends: smokeping, nagios3-core, liblog-log4perl-perl, libnagios-object-perl
+Description: Read Nagios configuration, generate Smokeping configuration files.
+ Provides an application to read Nagios's configuration files, detect when they
+ have changed and generate configuration for Smokeping.
+ 
+ This allows easy synchronisation of host & hostgroup information from Nagios
+ to Smokeping without administrator intervention.
