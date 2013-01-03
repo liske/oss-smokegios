@@ -1,6 +1,0 @@
-#
-# Check for configuration changes in Nagios to apply to Smokeping
-#
-
-01 * * * *     root /usr/bin/smokegios -c /etc/smokeping/smokegios.conf
-
