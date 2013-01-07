@@ -80,7 +80,7 @@ if (! -e $cfg_file)
 
 
 # read in config file
-my ($cfg_smokeping_config, $cfg_smokeping_reload, $cfg_nagios_config, $cfg_smokegios_log_file, $cfg_smokegios_log_debug, $cfg_smokegios_log_debug_fg);
+my ($cfg_smokeping_config, $cfg_smokeping_reload, $cfg_nagios_config, $cfg_smokegios_log_file, $cfg_smokegios_log_debug, $cfg_smokegios_log_debug_fg, $cfg_smokegios_hostgroup_sortfunc, $cfg_smokegios_host_sortfunc);
 
 open(CFG, $cfg_file) || die("Unable to read config file $cfg_file\n");
 
@@ -109,6 +109,16 @@ while (my $line = <CFG>)
 	if ($line =~ /^smokegios_log_debug\s*=\s*"([\S\s]*)"/)
 	{
 		$cfg_smokegios_log_debug = $1;
+	}
+
+	if ($line =~ /^smokegios_hostgroup_sortfunc\s*=\s*"([\S\s]*)"/)
+	{
+		$cfg_smokegios_hostgroup_sortfunc = $1;
+	}
+
+	if ($line =~ /^smokegios_host_sortfunc\s*=\s*"([\S\s]*)"/)
+	{
+		$cfg_smokegios_host_sortfunc = $1;
 	}
 }
 
@@ -360,7 +370,7 @@ foreach my $host ( $nagios->list_hosts() )
 }
 
 
-foreach my $hostgroup ( $nagios->list_hostgroups() )
+foreach my $hostgroup ( sort {eval $cfg_smokegios_hostgroup_sortfunc} $nagios->list_hostgroups() )
 {
 	next if ( !length $hostgroup->hostgroup_name );    # avoid a bug in Nagios::Object
 
@@ -400,7 +410,7 @@ foreach my $hostgroup ( $nagios->list_hostgroups() )
 	# add to final output
 	$final .= $str;
 
-	foreach my $hostgroup_member ( @{$hostgroup->members} )
+	foreach my $hostgroup_member ( sort {eval $cfg_smokegios_host_sortfunc} @{$hostgroup->members} )
 	{
 		$log->debug("Member ". $hostgroup_member->{"host_name"} ."");
 		 
